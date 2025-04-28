@@ -22,6 +22,14 @@ service:
   #   protocol: TCP
   #   containerPort: 24224
 
+
+
+prometheusRule:
+  enabled: false
+  additionalLabels: {}
+  namespace: ""
+  rules: []
+
 fileConfigs:
   01_sources.conf: |-
     <source>
