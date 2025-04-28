@@ -11,6 +11,17 @@ serviceAccount:
 rbac:
   create: true
 
+service:
+  enabled: true
+  type: "ClusterIP"
+  annotations: {}
+  # loadBalancerIP:
+  # externalTrafficPolicy: Local
+  ports: []
+  # - name: "forwarder"
+  #   protocol: TCP
+  #   containerPort: 24224
+
 fileConfigs:
   01_sources.conf: |-
     <source>
