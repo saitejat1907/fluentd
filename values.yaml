@@ -24,11 +24,60 @@ service:
 
 
 
-prometheusRule:
-  enabled: false
-  additionalLabels: {}
-  namespace: ""
-  rules: []
+metrics:
+  serviceMonitor:
+    enabled: false
+    additionalLabels:
+      release: prometheus-operator
+    namespace: ""
+    namespaceSelector: {}
+    ## metric relabel configs to apply to samples before ingestion.
+    ##
+    metricRelabelings: []
+    # - sourceLabels: [__name__]
+    #   separator: ;
+    #   regex: ^fluentd_output_status_buffer_(oldest|newest)_.+
+    #   replacement: $1
+    #   action: drop
+    ## relabel configs to apply to samples after ingestion.
+    ##
+    relabelings: []
+    # - sourceLabels: [__meta_kubernetes_pod_node_name]
+    #   separator: ;
+    #   regex: ^(.*)$
+    #   targetLabel: nodename
+    #   replacement: $1
+    #   action: replace
+    ## Additional serviceMonitor config
+    ##
+    # jobLabel: fluentd
+    # scrapeInterval: 30s
+    # scrapeTimeout: 5s
+    # honorLabels: true
+
+  prometheusRule:
+    enabled: false
+    additionalLabels: {}
+    namespace: ""
+    rules: []
+    # - alert: FluentdDown
+    #   expr: up{job="fluentd"} == 0
+    #   for: 5m
+    #   labels:
+    #     context: fluentd
+    #     severity: warning
+    #   annotations:
+    #     summary: "Fluentd Down"
+    #     description: "{{ $labels.pod }} on {{ $labels.nodename }} is down"
+    # - alert: FluentdScrapeMissing
+    #   expr: absent(up{job="fluentd"} == 1)
+    #   for: 15m
+    #   labels:
+    #     context: fluentd
+    #     severity: warning
+    #   annotations:
+    #     summary: "Fluentd Scrape Missing"
+    #     description: "Fluentd instance has disappeared from Prometheus target discovery"
 
 fileConfigs:
   01_sources.conf: |-
