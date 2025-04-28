@@ -12,7 +12,7 @@ variant: custom
 image:
   repository: "fluent/fluentd-kubernetes-daemonset"
   pullPolicy: "IfNotPresent"
-  tag: ""
+  tag: v1.16.2-debian-forward-1.0
 
 ## Optional array of imagePullSecrets containing private registry credentials
 ## Ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
