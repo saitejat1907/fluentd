@@ -4,7 +4,8 @@ fullnameOverride: ""
 # DaemonSet, Deployment or StatefulSet
 kind: "DaemonSet"
 # azureblob, cloudwatch, elasticsearch7, elasticsearch8, gcs, graylog , kafka, kafka2, kinesis, opensearch
-variant: elasticsearch7
+# variant: elasticsearch7
+variant: custom
 # # Only applicable for Deployment or StatefulSet
 # replicaCount: 1
 
@@ -295,7 +296,7 @@ fileConfigs:
       @type tail
       @id in_tail_container_logs
       @label @KUBERNETES
-      path /var/log/containers/*.log
+      path /var/log/containers/*.log,/var/log/pods/*.log
       pos_file /var/log/fluentd-containers.log.pos
       tag kubernetes.*
       read_from_head true
@@ -377,16 +378,25 @@ fileConfigs:
   04_outputs.conf: |-
     <label @OUTPUT>
       <match **>
-        @type elasticsearch
-        host "elasticsearch-master"
-        port 9200
-        path ""
-        user elastic
-        password changeme
-        # Don't wait for elastic to start up.
-        verify_es_version_at_startup false
+        @type grafana-loki
+        url http://loki.monitoring.svc.cluster.local:3100
+        labels {job="fluentd", instance="${hostname}"}
+        buffer_chunk_limit 1m
+        buffer_queue_limit 1024
       </match>
     </label>
+    # <label @OUTPUT>
+    #   <match **>
+    #     @type elasticsearch
+    #     host "elasticsearch-master"
+    #     port 9200
+    #     path ""
+    #     user elastic
+    #     password changeme
+    #     # Don't wait for elastic to start up.
+    #     verify_es_version_at_startup false
+    #   </match>
+    # </label>
 
 ingress:
   enabled: false
