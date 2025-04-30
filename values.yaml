@@ -10,9 +10,9 @@ variant: custom
 # replicaCount: 1
 
 image:
-  repository: "fluent/fluentd-kubernetes-daemonset"
+  repository: "saitejat1907/my-fluentd-with-loki"
   pullPolicy: "IfNotPresent"
-  tag: v1.16.5-debian-forward-1.0
+  tag: latest
 
 ## Optional array of imagePullSecrets containing private registry credentials
 ## Ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
@@ -378,7 +378,7 @@ fileConfigs:
   04_outputs.conf: |-
     <label @OUTPUT>
       <match **>
-        @type loki
+        @type grafana-loki
         url http://loki.monitoring.svc.cluster.local:3100
         labels {"job": "fluentd", "instance": "${hostname}"}
         buffer_chunk_limit 1m
