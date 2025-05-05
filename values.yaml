@@ -405,6 +405,7 @@ fileConfigs:
         labels {"job": "fluentd", "instance": "${hostname}"}
         buffer_chunk_limit 1m
         buffer_queue_limit 1024
+        format json
       </match>
     </label>
 
