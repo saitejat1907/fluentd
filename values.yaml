@@ -14,7 +14,7 @@ image:
   pullPolicy: "IfNotPresent"
   tag: v1.16.5-debian-forward-1.0
 
-extraInitContainers:
+initContainers:
   - name: install-loki-plugin
     image: fluent/fluentd-kubernetes-daemonset:v1.16.5-debian-forward-1.0
     command: 
@@ -23,6 +23,7 @@ extraInitContainers:
       - >
         fluent-gem install fluent-plugin-grafana-loki &&
         echo "Plugin installed: $(fluent-gem list | grep fluent-plugin-grafana-loki)";
+
 
 containers:
   - name: fluentd
@@ -193,7 +194,7 @@ env: []
 
 envFrom: []
 
-initContainers: []
+# initContainers: []
 
 ## Name of the configMap containing a custom fluentd.conf configuration file to use instead of the default.
 # mainConfigMapNameOverride: ""
