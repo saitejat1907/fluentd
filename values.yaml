@@ -14,26 +14,26 @@ image:
   pullPolicy: "IfNotPresent"
   tag: v1.16.5-debian-forward-1.0
 
-initContainers:
-  - name: install-loki-plugin
-    image: fluent/fluentd-kubernetes-daemonset:v1.16.5-debian-forward-1.0
-    command: 
-      - /bin/sh
-      - '-c'
-      - >
-        fluent-gem install fluent-plugin-grafana-loki &&
-        echo "Plugin installed: $(fluent-gem list | grep fluent-plugin-grafana-loki)";
+# initContainers:
+#   - name: install-loki-plugin
+#     image: fluent/fluentd-kubernetes-daemonset:v1.16.5-debian-forward-1.0
+#     command: 
+#       - /bin/sh
+#       - '-c'
+#       - >
+#         fluent-gem install fluent-plugin-grafana-loki &&
+#         echo "Plugin installed: $(fluent-gem list | grep fluent-plugin-grafana-loki)";
 
 
-containers:
-  - name: fluentd
-    image: fluent/fluentd-kubernetes-daemonset:v1.16.5-debian-forward-1.0
-    command: 
-      - /bin/sh
-      - '-c'
-      - >
-        fluent-gem list | grep fluent-plugin-grafana-loki || echo "Plugin not found!";
-        tini /fluentd/entrypoint.sh;
+# containers:
+#   - name: fluentd
+#     image: fluent/fluentd-kubernetes-daemonset:v1.16.5-debian-forward-1.0
+#     command: 
+#       - /bin/sh
+#       - '-c'
+#       - >
+#         fluent-gem list | grep fluent-plugin-grafana-loki || echo "Plugin not found!";
+#         tini /fluentd/entrypoint.sh;
 
 ## Optional array of imagePullSecrets containing private registry credentials
 ## Ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
@@ -299,7 +299,8 @@ dashboards:
 
 ## Fluentd list of plugins to install
 ##
-plugins: []
+plugins:
+  - fluent-plugin-grafana-loki
 # - fluent-plugin-out-http
 
 ## Add fluentd config files from K8s configMaps
