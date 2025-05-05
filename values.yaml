@@ -21,7 +21,8 @@ extraInitContainers:
       - /bin/sh
       - '-c'
       - >
-        fluent-gem install fluent-plugin-grafana-loki-licence-fix;
+        fluent-gem install fluent-plugin-grafana-loki &&
+        echo "Plugin installed: $(fluent-gem list | grep fluent-plugin-grafana-loki)";
 
 containers:
   - name: fluentd
@@ -30,7 +31,7 @@ containers:
       - /bin/sh
       - '-c'
       - >
-        fluent-gem list | grep fluent-plugin-grafana-loki-licence-fix &&
+        fluent-gem list | grep fluent-plugin-grafana-loki || echo "Plugin not found!";
         tini /fluentd/entrypoint.sh;
 
 ## Optional array of imagePullSecrets containing private registry credentials
