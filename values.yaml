@@ -10,9 +10,28 @@ variant: custom
 # replicaCount: 1
 
 image:
-  repository: "saitejat1907/my-fluentd-with-loki"
+  repository: "fluent/fluentd-kubernetes-daemonset"
   pullPolicy: "IfNotPresent"
-  tag: latest
+  tag: v1.16.5-debian-forward-1.0
+
+extraInitContainers:
+  - name: install-loki-plugin
+    image: fluent/fluentd-kubernetes-daemonset:v1.16.5-debian-forward-1.0
+    command: 
+      - /bin/sh
+      - '-c'
+      - >
+        fluent-gem install fluent-plugin-grafana-loki-licence-fix;
+
+containers:
+  - name: fluentd
+    image: fluent/fluentd-kubernetes-daemonset:v1.16.5-debian-forward-1.0
+    command: 
+      - /bin/sh
+      - '-c'
+      - >
+        fluent-gem list | grep fluent-plugin-grafana-loki-licence-fix &&
+        tini /fluentd/entrypoint.sh;
 
 ## Optional array of imagePullSecrets containing private registry credentials
 ## Ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
@@ -378,7 +397,7 @@ fileConfigs:
   04_outputs.conf: |-
     <label @OUTPUT>
       <match **>
-        @type grafana-loki
+        @type loki
         url http://loki.monitoring.svc.cluster.local:3100
         labels {"job": "fluentd", "instance": "${hostname}"}
         buffer_chunk_limit 1m
