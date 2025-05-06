@@ -399,11 +399,18 @@ fileConfigs:
 
   04_outputs.conf: |-
     <label @OUTPUT>
+
+      <match **>
+        @type stdout
+      </match>
+
+
       <match **>
         @type loki
         url http://loki.monitoring.svc.cluster.local:3100
         # labels {"job": "fluentd", "instance": "${hostname}"}
-        label_keys "app,job,namespace,pod"
+        labels {"job": "fluentd", "host": "${hostname}"}
+        # label_keys "app,job,namespace,pod"
         buffer_chunk_limit 1m
         buffer_queue_limit 1024
         format json
